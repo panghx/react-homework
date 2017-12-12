@@ -12,12 +12,17 @@ const GenNonDuplicateID = () => {
 class TodoContainer extends Component {
     constructor(props) {
         super(props);
-        let bottonStatus = (props.status === "" || props.status === undefined) ? "all" : props.status;
         this.state = {
             todoList:[],
             inputValue: "",//输入的值
-            bottonStatus: bottonStatus,//按钮状态
+            bottonStatus:"all",
         }
+    }
+    componentWillReceiveProps(nextProps){
+        let bottonStatus = nextProps.status;
+        this.setState({
+            bottonStatus: bottonStatus,
+        });
     }
     componentDidMount(){
         this.getTodoList();
@@ -181,29 +186,26 @@ class TodoContainer extends Component {
             }
         }).then(function(response) {
             return response.json();
-        }).then(function(json) {
-            if(json.data.isSuccess){
-                console.log("设置成功",json);
+        }).then(result => {
+            if(!result.data.isSuccess){
+                alert("储存失败，请稍后重试")
+            }else{
+                this.setState({
+                    todoList:todoList,
+                    checkAll: bool,
+                });
+                console.log("更新结果：",result)
             }
+        })
+        .catch(error => {
+            console.log(error);
+            alert("储存失败，请稍后重试"+error)
         });
-        this.setState({
-            todoList:todoList,
-            checkAll: bool,
-        });
+        
     }
-
     //请求后台数据
     getTodoList = () => {
         let checkAll = false;
-        let todoList = [];
-
-        let setData = (param) =>{
-            this.setState({
-                todoList:param.todoList,
-                checkAll:param.checkAll,
-            });
-        };
-
         fetch('http://cloudapi.yoloke.com/rest/todo/get-todos.json',{
             method:"POST",
             body:JSON.stringify({"userId":"panghx"}),
@@ -212,20 +214,19 @@ class TodoContainer extends Component {
             }
         }).then(function(response) {
             return response.json();
-        }).then(function(json) {
-            console.log("get-todos",json.data.todos[0].todosJson);
-            if(json.data.isSuccess){
-                todoList = JSON.parse(json.data.todos[0].todosJson);
-                if (todoList.length>0) {
-                    checkAll = todoList.length === todoList.filter(item => item.status === "complete").length;
-                    setData({
-                        todoList:todoList,
-                        checkAll:checkAll,
-                    });
-                }
-            }
+        }).then(result => {
+            console.log("查询结果：",result.data.todos[0].todosJson);
+            let todoList = JSON.parse(result.data.todos[0].todosJson);
+            checkAll = (todoList.length === todoList.filter(item => item.status === "complete").length);
+            this.setState({
+                todoList: todoList,
+                checkAll: checkAll,
+            });
+        })
+        .catch(error => {
+            console.log(error);
+            alert("获取失败，请稍后重试"+error)
         });
-        
     }
     render() {
         return (

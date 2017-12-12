@@ -15,7 +15,7 @@ const TodoBodyComponent = ({
 })=>{
     let notCompleteCount = todoList.reduce((total, item) => total + (item.status==='complete' ? 0 : 1), 0);
     let completeCount = todoList.length - notCompleteCount;
-    return(
+    return(                                                                    
         <div className={className} primary={todoList.length}>
             <CheckBox 
                 type="checkbox" 

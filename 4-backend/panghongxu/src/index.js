@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TodoApp from './TodoApp' ;
+import Test from './Test' ;
 import { injectGlobal } from "styled-components";
 
-ReactDOM.render(<TodoApp/>, document.getElementById('root'));
+ReactDOM.render(<Test/>, document.getElementById('root'));
 
 
 injectGlobal`

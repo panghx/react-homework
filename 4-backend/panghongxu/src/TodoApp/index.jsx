@@ -11,15 +11,15 @@ import {
     Redirect
 } from 'react-router-dom';
 
-const TodoRouter = (props) => {
+const TodoApp = (props) => {
     return (
         <Router>
             <div>
                 <Switch>
-                    <PrivateRoute exact path="/"          component={TodoBoot}/>
-                    <PrivateRoute exact path="/all"       component={TodoAll}/>
-                    <PrivateRoute exact path="/active"    component={TodoActive}/>
-                    <PrivateRoute exact path="/complete"  component={TodoComplete}/>
+                    <PrivateRoute exact path="/" component={TodoRedirect} status="all"/>
+                    <PrivateRoute exact path="/all" component={TodoRedirect} status="all"/>
+                    <PrivateRoute exact path="/active" component={TodoRedirect} status="active"/>
+                    <PrivateRoute exact path="/complete" component={TodoRedirect} status="complete"/>
 
                     <Route exact path="/login"    component={Login}/>
                     <Route exact path="/logout"   component={LogOut}/>
@@ -29,23 +29,14 @@ const TodoRouter = (props) => {
         </Router>
     );
 }
-const TodoBoot = (props) => {
-    return <TodoContainer status="all"/>
+const TodoRedirect = (props) => {
+    return <TodoContainer status={props.status}/>
 }
-const TodoAll = (props) => {
-    return <TodoContainer status="all"/>
-}
-const TodoActive = (props) => {
-    return <TodoContainer status="active"/>
-}
-const TodoComplete = (props) => {
-    return <TodoContainer status="complete"/>
-}
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ component: Component,status, ...rest }) => {
     return <Route {...rest} render={props => {
         let hasLogin = localStorage.getItem("hasLogin");
         if (hasLogin==="true") {
-            return <Component {...props}/>
+            return <Component {...props} status={status}/>
         }
         return <Redirect to={{
             pathname: '/login',
@@ -58,4 +49,4 @@ const NotFound = (props) => {
     return <div><h1>404 未找到该页面 </h1><br/><Link to="/">首页</Link></div>
 }
 
-export default TodoRouter;
+export default TodoApp;
