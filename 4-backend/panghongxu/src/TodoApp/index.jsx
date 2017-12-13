@@ -11,7 +11,7 @@ import {
     Redirect
 } from 'react-router-dom';
 
-const TodoApp = (props) => {
+const TodoApp = () => {
     return (
         <Router>
             <div>

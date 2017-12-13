@@ -1,10 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TodoApp from './TodoApp' ;
-import Test from './Test' ;
+import { Provider } from 'react-redux'
 import { injectGlobal } from "styled-components";
 
-ReactDOM.render(<Test/>, document.getElementById('root'));
+import TodoApp from './TodoApp';
+import configureStore from './reducers/configureStore'
+
+
+//ReactDOM.render(<TodoApp/>, document.getElementById('root'));
+
+
+const store = configureStore();
+
+ReactDOM.render(
+    <Provider store={store}>
+        <TodoApp />
+    </Provider>
+    , document.getElementById('root'))
+
+if (module.hot) {
+    module.hot.accept('./TodoApp', () => {
+        ReactDOM.render(
+            <Provider store={store}>
+                <TodoApp />
+            </Provider>,
+            document.getElementById('root'),
+        )
+    })
+}
+
 
 
 injectGlobal`
